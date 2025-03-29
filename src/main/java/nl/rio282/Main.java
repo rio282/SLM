@@ -13,11 +13,11 @@ public class Main {
     private static final File FILE_DR_SEUSS = new File("drseuss.txt");
     private static final File FILE_OUTPUT_TOKENS = new File("tokens.out");
 
-    private static final int TOKEN_LIMIT = 50;
+    private static final int TOKEN_LIMIT = 5 + new Random().nextInt(95);
 
     public static void main(String[] args) throws IOException {
 
-        Tokenizer tokenizer = new Tokenizer(FILE_DR_SEUSS, FILE_OUTPUT_TOKENS);
+        Tokenizer tokenizer = new Tokenizer(FILE_THE_SONNETS, FILE_OUTPUT_TOKENS);
         boolean wasTokenizationSuccessful = tokenizer.tokenize();
         if (!wasTokenizationSuccessful) {
             System.err.println("Failed to tokenize. Exiting...");
@@ -54,6 +54,10 @@ public class Main {
         }
     }
 
+    private static boolean isSentenceEnd(String token) {
+        return token.endsWith(".") || token.endsWith("?") || token.endsWith("!");
+    }
+
     private static void spit(List<String> tokens) throws InterruptedException {
         if (tokens.size() == 2) {
             System.err.println("Couldn't find word. Try another.");
@@ -64,13 +68,13 @@ public class Main {
 
         for (int i = 0; i < tokens.size(); i++) {
             String token = tokens.get(i);
-            if (token.endsWith(".")) token += "\n";
+            if (isSentenceEnd(token)) token += "\n";
 
             // print token + suffix
             System.out.print(token);
-            if (i == tokens.size() - 1) {
+            if (i == tokens.size() - 1 && !isSentenceEnd(token)) {
                 System.out.println(".");
-            } else if (!token.endsWith(".")) {
+            } else if (!token.endsWith("\n")) {
                 System.out.print(" ");
             }
 

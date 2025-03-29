@@ -16,6 +16,7 @@ public class TokenizerReader extends IO {
     private final File file;
 
     private final String CLEANING_REGEX = "[^a-zA-Z,\\s.!?']";
+    private final String SPLITTER = "(?<=[.])|\\s+";
 
     public TokenizerReader(Tokenizer tokenizer, File file) {
         this.tokenizer = tokenizer;
@@ -33,7 +34,7 @@ public class TokenizerReader extends IO {
     }
 
     private void processLine(String line) {
-        String[] tokens = line.replaceAll(CLEANING_REGEX, "").toLowerCase(Locale.ROOT).split("\\s+");
+        String[] tokens = line.replaceAll(CLEANING_REGEX, "").toLowerCase(Locale.ROOT).split(SPLITTER);
         for (String token : tokens) if (!token.isEmpty()) tokenizer.addToken(token);
     }
 
