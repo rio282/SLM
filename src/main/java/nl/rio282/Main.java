@@ -10,14 +10,14 @@ import java.util.*;
 public class Main {
 
     private static final File FILE_THE_SONNETS = new File("the-sonnets--shakespeare.txt");
-//    private static final File FILE_THE_SONNETS = new File("drseuss.txt");
+    private static final File FILE_DR_SEUSS = new File("drseuss.txt");
     private static final File FILE_OUTPUT_TOKENS = new File("tokens.out");
 
-    private static final int TOKEN_LIMIT = 150;
+    private static final int TOKEN_LIMIT = 50;
 
     public static void main(String[] args) throws IOException {
 
-        Tokenizer tokenizer = new Tokenizer(FILE_THE_SONNETS, FILE_OUTPUT_TOKENS);
+        Tokenizer tokenizer = new Tokenizer(FILE_DR_SEUSS, FILE_OUTPUT_TOKENS);
         boolean wasTokenizationSuccessful = tokenizer.tokenize();
         if (!wasTokenizationSuccessful) {
             System.err.println("Failed to tokenize. Exiting...");
@@ -55,17 +55,22 @@ public class Main {
     }
 
     private static void spit(List<String> tokens) throws InterruptedException {
+        if (tokens.size() == 2) {
+            System.err.println("Couldn't find word. Try another.");
+            return;
+        }
+
         Random random = new Random();
 
         for (int i = 0; i < tokens.size(); i++) {
             String token = tokens.get(i);
             if (token.endsWith(".")) token += "\n";
-            System.out.print(token);
 
-            // decide if we need to print a space or a period
+            // print token + suffix
+            System.out.print(token);
             if (i == tokens.size() - 1) {
                 System.out.println(".");
-            } else {
+            } else if (!token.endsWith(".")) {
                 System.out.print(" ");
             }
 

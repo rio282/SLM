@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 public class Predictor {
 
     // should be between 0.0-1.0
-    public static final float TEMPERATURE = 0.77F;
+    public static final float TEMPERATURE = 0.673483F;
 
 
     private final Tokenizer tokenizer;

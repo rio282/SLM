@@ -5,6 +5,7 @@ import nl.rio282.slm.io.TokenizerWriter;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Tokenizer {
@@ -29,6 +30,9 @@ public class Tokenizer {
 
             writer.write();
         } catch (Exception e) {
+            System.err.println(e.getMessage());
+            System.err.println("\nStacktrace:");
+            for (StackTraceElement ste : Thread.currentThread().getStackTrace()) System.err.println(ste + "\n");
             return false;
         }
 
