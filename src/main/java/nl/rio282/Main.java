@@ -5,16 +5,15 @@ import nl.rio282.slm.Tokenizer;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.DrbgParameters;
-import java.util.Locale;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 
     private static final File FILE_THE_SONNETS = new File("the-sonnets--shakespeare.txt");
+//    private static final File FILE_THE_SONNETS = new File("drseuss.txt");
     private static final File FILE_OUTPUT_TOKENS = new File("tokens.out");
 
-    private static final int TOKEN_LIMIT = 10;
+    private static final int TOKEN_LIMIT = 150;
 
     public static void main(String[] args) throws IOException {
 
@@ -30,21 +29,47 @@ public class Main {
         // ask for input
         System.out.print("Write a word: ");
         Scanner scanner = new Scanner(System.in);
-        String startingWord = scanner.nextLine();
+        String startingWord = scanner.nextLine().trim();
+        if (startingWord.contains(" ")) {
+            System.err.println("Starting word cannot contain a space.");
+            return;
+        }
 
         // init predictor
         Predictor predictor = new Predictor(tokenizer);
         predictor.performAnalysis();
 
-        // get next tokens until we hit the token limit or a "."
-        String next = predictor.predictNextToken(startingWord.toLowerCase(Locale.ROOT));
-        for (int tokens = 0; tokens < TOKEN_LIMIT; ++tokens) {
-            System.out.printf("%s ", next);
-            next = predictor.predictNextToken(next);
-            if (next.equals(".")) {
-                System.out.println(next);
-                break;
+        // add tokens to the list
+        LinkedList<String> tokens = new LinkedList<>(Collections.singleton(startingWord.toLowerCase(Locale.ROOT)));
+        for (int tokenCount = 0; tokenCount < TOKEN_LIMIT; ++tokenCount) {
+            tokens.add(predictor.predictNextToken(tokens.getLast()));
+            if (tokens.getLast().equals(".")) break;
+        }
+
+        // show output
+        try {
+            spit(tokens);
+        } catch (InterruptedException ignored) {
+            System.out.println("\nFailed to print out tokens.");
+        }
+    }
+
+    private static void spit(List<String> tokens) throws InterruptedException {
+        Random random = new Random();
+
+        for (int i = 0; i < tokens.size(); i++) {
+            String token = tokens.get(i);
+            if (token.endsWith(".")) token += "\n";
+            System.out.print(token);
+
+            // decide if we need to print a space or a period
+            if (i == tokens.size() - 1) {
+                System.out.println(".");
+            } else {
+                System.out.print(" ");
             }
+
+            Thread.sleep(5 + random.nextInt(70));
         }
     }
 

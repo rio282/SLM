@@ -7,16 +7,14 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.util.Locale;
 
 public class TokenizerReader extends IO {
 
     private final Tokenizer tokenizer;
     private final File file;
 
-    /**
-     * to lowercase, remove punctuation
-     */
-    private final String CLEANING_REGEX = "[^a-z\\s]";
+    private final String CLEANING_REGEX = "[^a-zA-Z,\\s.]";
 
     public TokenizerReader(Tokenizer tokenizer, File file) {
         this.tokenizer = tokenizer;
@@ -30,8 +28,8 @@ public class TokenizerReader extends IO {
     }
 
     private void processLine(String line) {
-        String[] tokens = line.replaceAll(CLEANING_REGEX, "").split("\\s+");
-        for (String token : tokens) tokenizer.addToken(token);
+        String[] tokens = line.replaceAll(CLEANING_REGEX, "").toLowerCase(Locale.ROOT).split("\\s+");
+        for (String token : tokens) if (!token.isEmpty()) tokenizer.addToken(token);
     }
 
 }

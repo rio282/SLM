@@ -30,19 +30,23 @@ public class Compressor {
     }
 
     public List<String> useBytePairEncoding() {
+        List<String> encodedTokens = new ArrayList<>();
+
+//        for (int i = 0; i < 1; i++) {  // iterative??
         Map<String, Integer> pairs = getPairs(tokens);
 
+        // find the most frequent pair
         String bestPair = pairs.entrySet().stream()
                 .max(Map.Entry.comparingByValue())
                 .map(Map.Entry::getKey)
                 .orElseThrow(() -> new RuntimeException("No pairs found"));
 
-        List<String> encodedTokens = new ArrayList<>();
-        tokens.forEach(token -> {
-            encodedTokens.add(token.replace(bestPair, bestPair.charAt(0) + bestPair.charAt(1) + "")); // + "" to convert to string;
-        });
+        String mergedToken = bestPair.charAt(0) + "" + bestPair.charAt(1);
+        tokens.forEach(token -> encodedTokens.add(token.replace(bestPair, mergedToken)));
+//        }
 
         return encodedTokens;
     }
+
 
 }
